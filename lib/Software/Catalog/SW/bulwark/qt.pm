@@ -44,8 +44,13 @@ sub canon2native_arch_map {
 sub get_download_url {
     my ($self, %args) = @_;
 
-    my $version = $args{version} //
-        get_latest_version(maybe arch => $args{arch});
+    my $version = $args{version};
+    if (!$version) {
+        my $verres = $self->get_latest_version(maybe arch => $args{arch});
+        return [500, "Can't get latest version: $verres->[0] - $verres->[1]"]
+            unless $verres->[0] == 200;
+        $version = $verres->[2];
+    }
 
     my $v0;
     if ($version =~ /\A(\d+\.\d+\.\d+)\.\d+\z/) {
@@ -61,12 +66,16 @@ sub get_download_url {
         $ext = ".zip";
     }
 
+    my $filename = join(
+        "",
+        "bulwark-$version-", $self->_canon2native_arch($args{arch}), $ext);
+
     [200, "OK",
      join(
          "",
-         "https://github.com/bulwark-crypto/Bulwark/releases/download/$v0/bulwark-$version-", $self->_canon2native_arch($args{arch}),
-         $ext,
+         "https://github.com/bulwark-crypto/Bulwark/releases/download/$v0/$filename",
      ), {
+         'func.filename' => $filename,
          'func.unwrap_tarball' => 0,
      }];
 }
@@ -74,7 +83,9 @@ sub get_download_url {
 sub get_programs {
     my ($self, %args) = @_;
     [200, "OK", [
-        {name=>"firefox", path=>"/"},
+        {name=>"bulwark-cli", path=>"/bin"},
+        {name=>"bulwark-qt", path=>"/bin"},
+        {name=>"bulwarkd", path=>"/bin"},
     ]];
 }
 
