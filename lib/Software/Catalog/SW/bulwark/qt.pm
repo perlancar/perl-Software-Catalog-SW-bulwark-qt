@@ -18,6 +18,7 @@ use Software::Catalog::Util qw(extract_from_url);
 sub meta {
     return {
         homepage_url => "https://bulwarkcrypto.com/",
+        versioning_scheme => "Dotted",
     };
 }
 
