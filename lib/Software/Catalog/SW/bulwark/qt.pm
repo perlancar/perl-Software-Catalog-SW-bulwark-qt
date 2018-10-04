@@ -76,16 +76,15 @@ sub get_download_url {
          "https://github.com/bulwark-crypto/Bulwark/releases/download/$v0/$filename",
      ), {
          'func.filename' => $filename,
-         'func.unwrap_tarball' => 0,
      }];
 }
 
 sub get_programs {
     my ($self, %args) = @_;
     [200, "OK", [
-        {name=>"bulwark-cli", path=>"/bin"},
-        {name=>"bulwark-qt", path=>"/bin"},
-        {name=>"bulwarkd", path=>"/bin"},
+        {name=>"bulwark-cli", path=>"/"},
+        {name=>"bulwark-qt", path=>"/"},
+        {name=>"bulwarkd", path=>"/"},
     ]];
 }
 
