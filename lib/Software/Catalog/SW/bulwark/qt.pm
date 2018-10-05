@@ -10,6 +10,7 @@ use warnings;
 use PerlX::Maybe;
 
 use Role::Tiny::With;
+with 'Versioning::Scheme::Dotted';
 with 'Software::Catalog::Role::Software';
 
 use Software::Catalog::Util qw(extract_from_url);
@@ -17,7 +18,6 @@ use Software::Catalog::Util qw(extract_from_url);
 sub meta {
     return {
         homepage_url => "https://bulwarkcrypto.com/",
-        versioning_scheme => "Dotted",
     };
 }
 
@@ -79,13 +79,17 @@ sub get_download_url {
      }];
 }
 
-sub get_programs {
+# required arg: version
+sub get_archive_info {
     my ($self, %args) = @_;
-    [200, "OK", [
-        {name=>"bulwark-cli", path=>"/"},
-        {name=>"bulwark-qt", path=>"/"},
-        {name=>"bulwarkd", path=>"/"},
-    ]];
+    [200, "OK", {
+        programs => [
+            {name=>"bulwark-cli", path=>"/"},
+            {name=>"bulwark-qt", path=>"/"},
+            {name=>"bulwarkd", path=>"/"},
+        ],
+        unwrap => $self->cmp_version($args{version}, '2.0.0.0') == -1 ? 1:0,
+    }];
 }
 
 1;
