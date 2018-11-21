@@ -79,16 +79,18 @@ sub get_download_url {
      }];
 }
 
-# required arg: version
 sub get_archive_info {
     my ($self, %args) = @_;
+
+    my $v = $args{version} // get_latest_version()->[2];
+
     [200, "OK", {
         programs => [
             {name=>"bulwark-cli", path=>"/"},
             {name=>"bulwark-qt", path=>"/"},
             {name=>"bulwarkd", path=>"/"},
         ],
-        unwrap => $self->cmp_version($args{version}, '2.0.0.0') == -1 ? 1:0,
+        unwrap => $self->cmp_version($v, '2.0.0.0') == -1 ? 1:0,
     }];
 }
 
