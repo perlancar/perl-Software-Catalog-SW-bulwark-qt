@@ -52,7 +52,7 @@ sub get_release_note {
 
     # 2.1.1 tree means version 2.1.1.0
     my $version = $args{version} // do {
-        my $res = get_latest_version(%args);
+        my $res = $self->get_latest_version(%args);
         return $res unless $res->[0] == 200;
         $res->[2];
     };
